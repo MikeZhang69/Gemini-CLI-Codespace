@@ -1,0 +1,22 @@
+{
+  "name": "Node.js 18 + Python + LLM API",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:18",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    },
+    "ghcr.io/devcontainers/features/miniconda:1": {
+      "auto-activate-base": true
+    }
+  },
+  "postCreateCommand": "pip install openai requests && npm install",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "dbaeumer.vscode-eslint"
+      ]
+    }
+  }
+}
