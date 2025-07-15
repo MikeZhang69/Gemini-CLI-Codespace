@@ -11,11 +11,18 @@ This is a simple web application that allows you to have a conversation with the
     ```
 
 2.  **Install the required Python libraries:**
+    The packages at least to install are: pip install -q -U google-generativeai
+    ```bash
+    pip install -q -U google-generativeai
+    pip install gradio
+    pip install dotenv
+    ```
+    For the full required packages, please use below command
     ```bash
     pip install -r requirements.txt
     ```
 
-3.  **Create a `.env` file:**
+4.  **Create a `.env` file:**
     Create a file named `.env` in the root of the project and add your Gemini API key to it:
     ```
     GEMINI_API_KEY=YOUR_API_KEY
