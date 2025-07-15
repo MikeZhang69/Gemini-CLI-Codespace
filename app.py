@@ -17,7 +17,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 
 # Create the generative model
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 def get_response(query, history):
     """
