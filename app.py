@@ -25,12 +25,20 @@ def get_response(query, history):
 
     Args:
         query: The user's query.
-        history: The conversation history.
+        history: The conversation history (list of (user, bot) tuples from Gradio).
 
     Returns:
         A string containing the model's response.
     """
-    chat = model.start_chat(history=history)
+    # Convert Gradio history (list of (user, bot) tuples) to Gemini's expected format
+    gemini_history = []
+    if history:
+        for user_msg, bot_msg in history:
+            if user_msg:
+                gemini_history.append({"role": "user", "parts": [user_msg]})
+            if bot_msg:
+                gemini_history.append({"role": "model", "parts": [bot_msg]})
+    chat = model.start_chat(history=gemini_history)
     response = chat.send_message(query)
     return response.text
 
