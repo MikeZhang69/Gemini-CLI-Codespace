@@ -55,7 +55,6 @@ def open_standard_calculator():
         if calc_state["reset"] or display_var.get() == "0":
             display_var.set(d)
             if calc_state["reset"]:
-                # After operator, append to expression
                 calc_state["expression"] += d
             else:
                 calc_state["expression"] = d
@@ -101,50 +100,31 @@ def open_standard_calculator():
             display_var.set("Error")
     def set_operator(op):
         try:
-            calc_state["operand"] = float(display_var.get())
-            calc_state["operator"] = op
-            calc_state["reset"] = True
             # Only add operator if last char is not already an operator
-            if not calc_state["expression"] or calc_state["expression"][-1] in "+-×÷":
+            if calc_state["expression"] and calc_state["expression"][-1] in "+-×÷":
                 calc_state["expression"] = calc_state["expression"][:-1] + op
             else:
                 calc_state["expression"] += op
             expr_var.set(calc_state["expression"])
+            calc_state["reset"] = True
         except Exception:
             display_var.set("Error")
     def calculate():
         try:
-            if calc_state["operator"] and calc_state["operand"] is not None:
-                a = calc_state["operand"]
-                b = float(display_var.get())
-                op = calc_state["operator"]
-                if op == "+":
-                    result = a + b
-                elif op == "-":
-                    result = a - b
-                elif op == "×":
-                    result = a * b
-                elif op == "÷":
-                    if b == 0:
-                        display_var.set("Error")
-                        expr_var.set("")
-                        calc_state["expression"] = ""
-                        return
-                    result = a / b
-                else:
-                    result = b
-                display_var.set(str(result).rstrip("0").rstrip(".") if "." in str(result) else str(result))
-                calc_state["operator"] = None
-                calc_state["operand"] = None
-                calc_state["reset"] = True
-                expr_var.set("")
-                calc_state["expression"] = ""
-            else:
-                # If no operator, just keep the current value
-                display_var.set(display_var.get())
-                calc_state["reset"] = True
-                expr_var.set("")
-                calc_state["expression"] = ""
+            expr = calc_state["expression"]
+            if not expr:
+                return
+            # Replace symbols for Python eval
+            expr_eval = expr.replace("×", "*").replace("÷", "/")
+            # Remove trailing operator if present
+            if expr_eval and expr_eval[-1] in "+-*/":
+                expr_eval = expr_eval[:-1]
+            # Evaluate safely
+            result = eval(expr_eval)
+            display_var.set(str(result).rstrip("0").rstrip(".") if "." in str(result) else str(result))
+            calc_state["reset"] = True
+            expr_var.set("")
+            calc_state["expression"] = ""
         except Exception:
             display_var.set("Error")
             expr_var.set("")
