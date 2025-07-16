@@ -101,6 +101,10 @@ def open_standard_calculator():
                 calc_state["operator"] = None
                 calc_state["operand"] = None
                 calc_state["reset"] = True
+            else:
+                # If no operator, just keep the current value
+                display_var.set(display_var.get())
+                calc_state["reset"] = True
         except Exception:
             display_var.set("Error")
 
@@ -118,6 +122,11 @@ def open_standard_calculator():
             btn = tk.Button(calc_window, text=text, width=5 if colspan==1 else 12, height=2, font=("Arial", 18), command=cmd)
             btn.grid(row=r+1, column=c, columnspan=colspan, padx=4, pady=4, sticky="nsew")
             if colspan == 2:
+                # Add the "." and "=" buttons after the wide "0" button
+                btn_dot = tk.Button(calc_window, text=".", width=5, height=2, font=("Arial", 18), command=input_dot)
+                btn_dot.grid(row=r+1, column=c+1, padx=4, pady=4, sticky="nsew")
+                btn_eq = tk.Button(calc_window, text="=", width=5, height=2, font=("Arial", 18), command=calculate)
+                btn_eq.grid(row=r+1, column=c+2, padx=4, pady=4, sticky="nsew")
                 break
     # Make grid cells expand
     for i in range(5):
