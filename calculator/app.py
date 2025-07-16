@@ -38,37 +38,65 @@ def open_standard_calculator():
     calc_window.title("Standard Calculator")
     calc_window.geometry("320x480")
 
-    # Display
+    # Expression display (shows the full input)
+    expr_var = tk.StringVar(value="")
+    expr_label = tk.Label(calc_window, textvariable=expr_var, font=("Arial", 14), anchor='e', bg='white', fg='gray')
+    expr_label.grid(row=0, column=0, columnspan=4, sticky="nsew", padx=10, pady=(8,0))
+
+    # Main display
     display_var = tk.StringVar(value="0")
     display = tk.Entry(calc_window, textvariable=display_var, font=("Arial", 28), bd=10, relief=tk.RIDGE, justify='right', state='readonly', readonlybackground='white')
-    display.grid(row=0, column=0, columnspan=4, pady=10, padx=10, sticky="nsew")
+    display.grid(row=1, column=0, columnspan=4, pady=(0,10), padx=10, sticky="nsew")
 
     # Calculator state
-    calc_state = {"current": "0", "operator": None, "operand": None, "reset": False}
+    calc_state = {"current": "0", "operator": None, "operand": None, "reset": False, "expression": ""}
 
     def input_digit(d):
         if calc_state["reset"] or display_var.get() == "0":
             display_var.set(d)
+            if calc_state["reset"]:
+                # After operator, append to expression
+                calc_state["expression"] += d
+            else:
+                calc_state["expression"] = d
             calc_state["reset"] = False
         else:
             display_var.set(display_var.get() + d)
+            calc_state["expression"] += d
+        expr_var.set(calc_state["expression"])
     def input_dot():
         if "." not in display_var.get():
             display_var.set(display_var.get() + ".")
+            calc_state["expression"] += "."
+            expr_var.set(calc_state["expression"])
     def clear():
         display_var.set("0")
         calc_state["operator"] = None
         calc_state["operand"] = None
         calc_state["reset"] = False
+        calc_state["expression"] = ""
+        expr_var.set("")
     def plus_minus():
         val = display_var.get()
         if val.startswith("-"):
             display_var.set(val[1:])
+            if calc_state["expression"].endswith(val):
+                calc_state["expression"] = calc_state["expression"][:-len(val)] + val[1:]
         elif val != "0":
             display_var.set("-" + val)
+            if calc_state["expression"].endswith(val):
+                calc_state["expression"] = calc_state["expression"][:-len(val)] + "-" + val
+        expr_var.set(calc_state["expression"])
     def percent():
         try:
-            display_var.set(str(float(display_var.get()) / 100))
+            val = float(display_var.get()) / 100
+            display_var.set(str(val))
+            # Update expression with percent value
+            if calc_state["expression"].endswith(display_var.get()):
+                calc_state["expression"] = calc_state["expression"][:-len(display_var.get())] + str(val)
+            else:
+                calc_state["expression"] += "%"
+            expr_var.set(calc_state["expression"])
         except Exception:
             display_var.set("Error")
     def set_operator(op):
@@ -76,6 +104,12 @@ def open_standard_calculator():
             calc_state["operand"] = float(display_var.get())
             calc_state["operator"] = op
             calc_state["reset"] = True
+            # Only add operator if last char is not already an operator
+            if not calc_state["expression"] or calc_state["expression"][-1] in "+-×÷":
+                calc_state["expression"] = calc_state["expression"][:-1] + op
+            else:
+                calc_state["expression"] += op
+            expr_var.set(calc_state["expression"])
         except Exception:
             display_var.set("Error")
     def calculate():
@@ -93,6 +127,8 @@ def open_standard_calculator():
                 elif op == "÷":
                     if b == 0:
                         display_var.set("Error")
+                        expr_var.set("")
+                        calc_state["expression"] = ""
                         return
                     result = a / b
                 else:
@@ -101,12 +137,18 @@ def open_standard_calculator():
                 calc_state["operator"] = None
                 calc_state["operand"] = None
                 calc_state["reset"] = True
+                expr_var.set("")
+                calc_state["expression"] = ""
             else:
                 # If no operator, just keep the current value
                 display_var.set(display_var.get())
                 calc_state["reset"] = True
+                expr_var.set("")
+                calc_state["expression"] = ""
         except Exception:
             display_var.set("Error")
+            expr_var.set("")
+            calc_state["expression"] = ""
 
     # Button layout (iPhone style)
     buttons = [
@@ -120,16 +162,16 @@ def open_standard_calculator():
         for c, (text, cmd) in enumerate(row):
             colspan = 2 if text == "0" and r == 4 and c == 0 else 1
             btn = tk.Button(calc_window, text=text, width=5 if colspan==1 else 12, height=2, font=("Arial", 18), command=cmd)
-            btn.grid(row=r+1, column=c, columnspan=colspan, padx=4, pady=4, sticky="nsew")
+            btn.grid(row=r+2, column=c, columnspan=colspan, padx=4, pady=4, sticky="nsew")
             if colspan == 2:
                 # Add the "." and "=" buttons after the wide "0" button
                 btn_dot = tk.Button(calc_window, text=".", width=5, height=2, font=("Arial", 18), command=input_dot)
-                btn_dot.grid(row=r+1, column=c+1, padx=4, pady=4, sticky="nsew")
+                btn_dot.grid(row=r+2, column=c+1, padx=4, pady=4, sticky="nsew")
                 btn_eq = tk.Button(calc_window, text="=", width=5, height=2, font=("Arial", 18), command=calculate)
-                btn_eq.grid(row=r+1, column=c+2, padx=4, pady=4, sticky="nsew")
+                btn_eq.grid(row=r+2, column=c+2, padx=4, pady=4, sticky="nsew")
                 break
     # Make grid cells expand
-    for i in range(5):
+    for i in range(7):
         calc_window.grid_rowconfigure(i, weight=1)
     for i in range(4):
         calc_window.grid_columnconfigure(i, weight=1)
