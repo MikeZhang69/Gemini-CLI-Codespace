@@ -1,0 +1,129 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #eef2f7;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+.calculator-container {
+    display: flex;
+    gap: 40px;
+}
+
+.calculator {
+    width: 400px;
+    border-radius: 20px;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1), -10px -10px 30px #ffffff;
+    background: #eef2f7;
+    overflow: hidden;
+}
+
+.display {
+    background-color: #eef2f7;
+    padding: 20px;
+    box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.1), inset -5px -5px 10px #ffffff;
+}
+
+.display input {
+    width: 100%;
+    border: none;
+    background: none;
+    color: #333;
+    font-size: 2.5em;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+}
+
+button {
+    border: none;
+    padding: 25px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background-color: #eef2f7;
+    color: #555;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1), -5px -5px 10px #ffffff;
+}
+
+button:hover {
+    box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.1), inset -5px -5px 10px #ffffff;
+    color: #000;
+}
+
+button:active {
+    box-shadow: inset 8px 8px 15px rgba(0, 0, 0, 0.1), inset -8px -8px 15px #ffffff;
+}
+
+.clear, .backspace {
+    color: #f44336;
+}
+
+.equals {
+    grid-row: span 2;
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: none;
+}
+
+.equals:hover {
+    background-color: #45a049;
+}
+
+.zero {
+    grid-column: span 2;
+}
+
+.history-container {
+    width: 300px;
+    padding: 20px;
+    background: #eef2f7;
+    border-radius: 20px;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1), -10px -10px 30px #ffffff;
+}
+
+.history-container h3 {
+    margin-top: 0;
+    text-align: center;
+    color: #555;
+}
+
+#history-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+    height: 380px;
+    overflow-y: auto;
+    text-align: right;
+}
+
+#history-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    color: #777;
+    font-size: 1.1em;
+}
+
+.history-container button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background-color: #f44336;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1), -5px -5px 10px #ffffff;
+}
+
+.history-container button:hover {
+    background-color: #d32f2f;
+}
