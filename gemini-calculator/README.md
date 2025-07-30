@@ -55,3 +55,5 @@ For the best experience and to avoid any potential browser security issues with 
 *   `index.html`: The main HTML file containing the structure of the calculator and history panel.
 *   `style.css`: The CSS file for all styling, including the layout, buttons, and neumorphic design.
 *   `script.js`: The JavaScript file that contains all the logic for calculations, history, and memory functions.
+
+## The project is purely built by Gemini-CLI
