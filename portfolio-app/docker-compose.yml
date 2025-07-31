@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      # You should replace this with a strong, unique secret in a real application
+      JWT_SECRET: your_jwt_secret_key
+      DATABASE_URL: postgresql://user:password@db:5432/portfolio_db
+    depends_on:
+      - db
+    networks:
+      - portfolio-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - portfolio-network
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: portfolio_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - portfolio-network
+
+volumes:
+  db-data:
+
+networks:
+  portfolio-network:
+    driver: bridge
